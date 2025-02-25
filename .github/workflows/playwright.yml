@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-  
 
 jobs:
   test:
@@ -22,12 +21,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: 'npm'  # ✅ Caches npm dependencies automatically
+
+      - name: Restore Playwright Browsers Cache  # ✅ Restores cached browsers if available
+        id: playwright-cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
 
       - name: Install dependencies
         run: npm ci
-        
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright Browsers (Only If Cache Misses)  # ✅ Installs only if cache is missing
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
       - name: Ensure docs directory exists
@@ -35,8 +44,6 @@ jobs:
     
       - name: Run Playwright tests
         run: npx playwright test
-
-      
 
       # Upload Playwright Report as an artifact
       - name: Upload Playwright Report
