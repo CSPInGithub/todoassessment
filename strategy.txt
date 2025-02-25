@@ -1,0 +1,44 @@
+Implementation Strategy Overview
+==================================
+For this automation framework, I followed a structured approach to ensure maintainability, and ease of execution in both local and CI environments.
+
+
+Test Design Approach
+===========================
+Used Playwright + JavaScript for end-to-end (E2E) testing of the TodoMVC React App.
+Designed test cases based on Acceptance Criteria (AC) to validate core functionalities:
+✅ Adding a new todo
+✅ Marking a todo as completed
+✅ Unmarking (re-activating) a completed todo
+✅ Toggling all todos as completed
+✅ Clearing completed todos
+
+
+Test Implementation
+============================
+Fixture-Based Approach:
+Created a custom test fixture (todoHelper) to encapsulate reusable actions such as adding, completing todos etc.
+This improves test readability and reduces code duplication.
+
+Page Object Model (POM) Inspired Structure:
+Encapsulated page interactions within todoHelper, making tests more modular and maintainable.
+
+Assertions & Validations:
+Used strict assertions (expect) to verify UI elements and their states.
+Ensured each step has a corresponding verification to detect failures early.
+
+CI/CD Integration (GitHub Actions)
+==================================
+Integrated GitHub Actions to automatically run tests on:
+Every push to main
+Manually triggered workflow
+Github pages used for report depolyemnt
+
+Reporting & Debugging
+===================================
+Configured Playwright to capture:
+Screenshots (only-on-failure)
+Videos (retain-on-failure)
+Reports can be accessed locally using:
+npx playwright show-report
+CI test reports can be accessed using url -https://cspingithub.github.io/todoassessment/playwright/

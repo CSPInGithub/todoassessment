@@ -1,0 +1,34 @@
+
+✅Add a new todo==>	When a user enters a new todo and presses Enter, it should:
+   Appear in the list under the "All" tab.
+   Appear under the "Active" tab.
+
+
+✅Mark a todo as completed==>	When a user marks a todo as completed, it should:
+   Move to the "Completed" tab.
+   Have a strikethrough style to indicate completion.
+   Be removed from the "Active" tab.
+
+✅Unmark a completed todo (Make active again)==>	When a user marks a completed todo as active, it should:
+   Move to the "Active" tab.
+   Be removed from the "Completed" tab.
+   The strikethrough style should be removed.
+
+✅Toggle All Todos as Completed===>	When a user clicks the "Toggle All" button:
+   All todos should be marked as completed.
+   All todos should move to the "Completed" tab.
+   The strikethrough style should be applied to all todos.
+
+✅Unmark All Todos as Active==>	If all todos are already completed, clicking "Toggle All" should:
+   Mark all todos as active again.
+   Move all todos to the "Active" tab.
+
+✅Clear Completed Todos==>	When a user clicks "Clear completed":
+   All completed todos should be removed from the list.
+   Active todos should remain unaffected.
+   If no completed todos exist, the button should be disabled or hidden.
+
+✅Empty todo: Pressing Enter with an empty input should not add a todo.
+
+Duplicate todos: The app should allow or prevent duplicate entries based on its behavior.
+   
