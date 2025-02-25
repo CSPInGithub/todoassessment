@@ -57,7 +57,8 @@ npx playwright show-report
 3. Click **"Run workflow"**  
 
 ### 📜 *Access Excution Report...*  
-1. ....[ExecutionReport](https://cspingithub.github.io/todoassessment/playwright/)
+1. After workflow execution complete
+   access ....[ExecutionReport](https://cspingithub.github.io/todoassessment/playwright/)
 
 ---
 
