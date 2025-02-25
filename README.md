@@ -6,11 +6,11 @@
 This repository contains end-to-end (E2E) tests for the **TodoMVC React App** using Playwright.  
 
 ### 📜 *Acceptance Criteria (AC)*  
-- `The acceptance criteria can be found in the [Story Directory](https://github.com/CSPInGithub/todoassessment/blob/main/story/todo_ac.txt).
+- `The acceptance criteria can be found [here...](https://github.com/CSPInGithub/todoassessment/blob/main/story/todo_ac.txt).
  
 
 ### 🛠️ *Implementation Strategy*  
-- `The implementation strategy can be found in the [Strategy](https://github.com/CSPInGithub/todoassessment/blob/main/strategy.txt).
+- `The implementation strategy can be found [here...](https://github.com/CSPInGithub/todoassessment/blob/main/strategy.txt).
 
 ---
 
