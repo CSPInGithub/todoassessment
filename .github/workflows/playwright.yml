@@ -27,19 +27,24 @@ jobs:
         run: npx playwright test
 
       - name: Deploy Playwright Report to `gh-pages`
-        if: always()  # Ensures the report is published even if tests fail
+        if: always()
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-          # Switch to `gh-pages` branch (create if missing)
+          # Ensure a clean working directory
+          git reset --hard
+          git clean -fd
+
+          # Switch to `gh-pages` branch (force checkout)
+          git fetch origin gh-pages
           git checkout gh-pages || git checkout --orphan gh-pages
 
-          # Remove old files
+          # Remove old files (force delete)
           git rm -rf .
 
-          # Move the new Playwright report to the root
-          mv ../playwright-report/* .
+          # Move the Playwright report to the root
+          mv playwright-report/* .
 
           # Commit and push the latest report
           git add .
