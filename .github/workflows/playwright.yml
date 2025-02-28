@@ -1,64 +1,47 @@
-name: Playwright Tests
+name: Playwright Tests & Deploy Report
 
-on:
-  push:
-    branches: [ main, master ]
-  workflow_dispatch:
+on: [push]
 
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write  
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout Main Branch
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures full history for branch switching
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: lts/*
-          cache: 'npm'  # ✅ Caches npm dependencies automatically
+          node-version: 18
+          cache: 'npm'
 
-      - name: Restore Playwright Browsers Cache  # ✅ Restores cached browsers if available
-        id: playwright-cache
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Install Playwright Browsers (Only If Cache Misses)  # ✅ Installs only if cache is missing
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Ensure docs directory exists
-        run: mkdir -p docs/playwright
-    
-      - name: Run Playwright tests
+      - name: Run Playwright Tests
         run: npx playwright test
 
-      # Upload Playwright Report as an artifact
-      - name: Upload Playwright Report
-        uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
-        with:
-          name: playwright-report
-          path: docs/playwright/
-          retention-days: 5
-
-      # Commit and Push Report to Repository (for GitHub Pages)
-      - name: Commit Playwright Report to Repository
+      - name: Deploy Playwright Report to `gh-pages`
+        if: always()  # Ensures the report is published even if tests fail
         run: |
-           git config --global user.name "github-actions"
-           git config --global user.email "github-actions@github.com"
-           git add docs/
-           git commit -m "Update Playwright Report [skip ci]" || echo "No changes to commit"
-           git push origin HEAD:main  # ✅ Ensure you're pushing to the correct branch
+          git config --global user.email "github-actions@github.com"
+          git config --global user.name "github-actions"
+
+          # Switch to `gh-pages` branch (create if missing)
+          git checkout gh-pages || git checkout --orphan gh-pages
+
+          # Remove old files
+          git rm -rf .
+
+          # Move the new Playwright report to the root
+          mv ../playwright-report/* .
+
+          # Commit and push the latest report
+          git add .
+          git commit -m "Update Playwright report"
+          git push -f origin gh-pages
