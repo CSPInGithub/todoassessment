@@ -1,63 +1,49 @@
-name: Playwright Tests & Deploy Report
+name: Playwright Tests & Report Deployment
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Change if needed
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Main Branch
+      - name: Checkout repository
         uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Ensures full history for branch switching
 
-      - name: Setup Node.js
+      - name: Install Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
 
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
+      - name: Install dependencies
+        run: npm install
 
       - name: Run Playwright Tests
         run: npx playwright test
 
-      - name: Backup Playwright Report Before Switching Branch
+      - name: Ensure Playwright Report Directory Exists
+        run: mkdir -p playwright-report
+
+      - name: Copy Playwright Report
         run: |
           mkdir -p temp-playwright-report
-          cp -r playwright-report/* temp-playwright-report/  # Save report
+          cp -r playwright-report/* temp-playwright-report/
+        
 
-      - name: Deploy Playwright Report to `gh-pages`
-        if: always()
+      - name: Deploy Playwright Report to GitHub Pages
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-
-          # Clean local repo state to prevent conflicts
-          git reset --hard
-          git clean -fd
-
-          # Ensure `gh-pages` branch exists and switch
-          git fetch origin gh-pages || git checkout --orphan gh-pages
-          git checkout gh-pages || echo "Creating gh-pages branch..."
-
-          # Remove old files
-          rm -rf *
-
-          # Restore Playwright report
-          mv ../temp-playwright-report/* .
-
-          # Verify that the report exists
-          if [ ! -f "index.html" ]; then
-            echo "❌ Playwright report not found! Aborting deployment."
-            exit 1
-          fi
-
-          # Commit & push the latest report
-          git add .
+          git fetch origin gh-pages
+          git checkout gh-pages || git checkout --orphan gh-pages
+          rm -rf playwright-report
+          mkdir -p playwright-report
+          mv temp-playwright-report/* playwright-report/
+          git add playwright-report
           git commit -m "Update Playwright report"
-          git push -f origin gh-pages
+          git push origin gh-pages --force
