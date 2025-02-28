@@ -26,27 +26,38 @@ jobs:
       - name: Run Playwright Tests
         run: npx playwright test
 
+      - name: Backup Playwright Report Before Switching Branch
+        run: |
+          mkdir -p temp-playwright-report
+          cp -r playwright-report/* temp-playwright-report/  # Save report
+
       - name: Deploy Playwright Report to `gh-pages`
         if: always()
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-          # Force clean any local changes to avoid conflicts
+          # Clean local repo state to prevent conflicts
           git reset --hard
           git clean -fd
 
-          # Ensure `gh-pages` branch exists and checkout
-          git fetch origin gh-pages || echo "No gh-pages branch found, creating one..."
-          git checkout gh-pages || git checkout --orphan gh-pages
+          # Ensure `gh-pages` branch exists and switch
+          git fetch origin gh-pages || git checkout --orphan gh-pages
+          git checkout gh-pages || echo "Creating gh-pages branch..."
 
-          # Remove old files (clean up previous report)
+          # Remove old files
           rm -rf *
 
-          # Move Playwright report to root
-          mv playwright-report/* .
+          # Restore Playwright report
+          mv ../temp-playwright-report/* .
 
-          # Commit and push the latest report
+          # Verify that the report exists
+          if [ ! -f "index.html" ]; then
+            echo "❌ Playwright report not found! Aborting deployment."
+            exit 1
+          fi
+
+          # Commit & push the latest report
           git add .
           git commit -m "Update Playwright report"
           git push -f origin gh-pages
