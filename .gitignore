@@ -2,7 +2,7 @@
 # Playwright
 node_modules/
 /test-results/
-/playwright-report/
+!playwright-report/.gitkeep
 /blob-report/
 /playwright/.cache/
 /test-results/
