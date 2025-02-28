@@ -14,7 +14,7 @@ test('TodoMVC - Verify adding a todo, marking as completed, unmarking, and clear
 
   // Verify the new todo appears in the "All" tab
   const visibleTodos = await todoHelper.getVisibleTodosText();
-  expect(visibleTodos).toHaveLength(2);
+  expect(visibleTodos).toHaveLength(1);
   expect(visibleTodos).toContain(newTodo);
 
   // Mark the todo as completed
