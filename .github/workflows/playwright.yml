@@ -32,18 +32,18 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-          # Ensure a clean working directory
+          # Force clean any local changes to avoid conflicts
           git reset --hard
           git clean -fd
 
-          # Switch to `gh-pages` branch (force checkout)
-          git fetch origin gh-pages
+          # Ensure `gh-pages` branch exists and checkout
+          git fetch origin gh-pages || echo "No gh-pages branch found, creating one..."
           git checkout gh-pages || git checkout --orphan gh-pages
 
-          # Remove old files (force delete)
-          git rm -rf .
+          # Remove old files (clean up previous report)
+          rm -rf *
 
-          # Move the Playwright report to the root
+          # Move Playwright report to root
           mv playwright-report/* .
 
           # Commit and push the latest report
