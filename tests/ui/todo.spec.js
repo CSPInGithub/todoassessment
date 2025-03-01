@@ -1,7 +1,7 @@
 //@ts-nocheck
-import { test, expect } from '../fixtures/todoFixture.js';
+import { test, expect } from '../../fixtures/todoFixture.js';
 
-import { todoItems } from '../test-data/todotestdata.js'
+import { todoItems } from '../../test-data/todotestdata.js'
 
 test('TodoMVC - Verify adding a todo, marking as completed, unmarking, and clearing it', async ({ todoHelper }) => {
   const newTodo = 'Buy Milk';

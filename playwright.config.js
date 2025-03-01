@@ -34,6 +34,7 @@ export default defineConfig({
     trace: 'on',
     headless: true,
     video: 'on',
+    waitUntil:'domcontentloaded'
   },
 
   /* Configure projects for major browsers */
